@@ -17,6 +17,6 @@ export class AuthService {
 
   async postUser() {
     console.log('CREATE USER');
-    return this.userRepository.save({ name: 'Larry' });
+    return this.userRepository.save({ lastName: 'Barry' });
   }
 }
