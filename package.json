@@ -20,7 +20,7 @@
     "build:api": "nest build api",
     "build:auth": "nest build auth",
     "build": "npm run build:api && npm run build:auth",
-    "typeorm": "npx typeorm -d ./dist/apps/auth/db/data-source.js",
+    "typeorm": "npx typeorm -d ./dist/apps/auth/apps/auth/src/db/data-source.js",
     "generate:migration": "npm run typeorm -- migration:generate",
     "run:migration": "npm run typeorm -- migration:run",
     "revert:migration": "npm run typeorm -- migration:revert"
@@ -67,8 +67,7 @@
     "ts-loader": "^9.4.3",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.1.3",
-    "bcrypt": "^5.1.1"
+    "typescript": "^5.1.3"
   },
   "jest": {
     "moduleFileExtensions": [

@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   Ctx,
@@ -8,6 +8,8 @@ import {
 } from '@nestjs/microservices';
 import { SharedService } from '@app/shared';
 import { RegisterDTO } from './dtos/register.dto';
+import { LoginDTO } from './dtos/login.dto';
+import { JwtGuard } from './jwt.guard';
 
 @Controller()
 export class AuthController {
@@ -20,8 +22,6 @@ export class AuthController {
   async getUser(@Ctx() context: RmqContext) {
     this.sharedService.acknowledgeMessage(context);
 
-    console.log('GET USERS');
-
     return this.authService.getUsers();
   }
 
@@ -30,5 +30,23 @@ export class AuthController {
     this.sharedService.acknowledgeMessage(context);
 
     return this.authService.register(newUser);
+  }
+
+  @MessagePattern({ cmd: 'login' })
+  async login(@Ctx() context: RmqContext, @Payload() existingUser: LoginDTO) {
+    this.sharedService.acknowledgeMessage(context);
+
+    return this.authService.login(existingUser);
+  }
+
+  @MessagePattern({ cmd: 'verify-jwt' })
+  @UseGuards(JwtGuard)
+  async verifyJwt(
+    @Ctx() context: RmqContext,
+    @Payload() payload: { jwt: string },
+  ) {
+    this.sharedService.acknowledgeMessage(context);
+
+    return this.authService.verifyJwt(payload.jwt);
   }
 }
