@@ -3,7 +3,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './user.entity';
+import { UserEntity } from '../../../libs/shared/src/entities/user.entity';
 import { SharedModule, PostgresDBModule } from '@app/shared';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtGuard } from './jwt.guard';
