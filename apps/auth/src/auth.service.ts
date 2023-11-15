@@ -1,29 +1,33 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { UserEntity } from '../../../libs/shared/src/entities/user.entity';
 import { RegisterDTO } from './dtos/register.dto';
 import * as bcrypt from 'bcrypt';
 import { LoginDTO } from './dtos/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { UserRepositoryInterface } from '@app/shared';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    @Inject('UsersRepositoryInterface')
+    private readonly usersRepository: UserRepositoryInterface,
     private readonly jwtService: JwtService,
   ) {}
 
   async getUsers() {
-    return this.userRepository.find();
+    return this.usersRepository.findAll();
+  }
+
+  async getUserById(id: number): Promise<UserEntity> {
+    return await this.usersRepository.findOneById(id);
   }
 
   async findByEmail(email: string): Promise<UserEntity> {
-    return this.userRepository.findOne({
+    return this.usersRepository.findByCondition({
       where: { email },
       select: ['id', 'firstName', 'lastName', 'email', 'password'],
     });
@@ -44,7 +48,7 @@ export class AuthService {
 
     const hashedPassword = await this.hashPassword(password);
 
-    const savedUser = await this.userRepository.save({
+    const savedUser = await this.usersRepository.save({
       firstName,
       lastName,
       email,
